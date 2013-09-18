@@ -1,0 +1,16 @@
+<suite name="Parallel Tests" verbose="1" thread-count="1" parallel="tests">
+ <tests>
+ 	
+	<test name="Mac+Firefox Test">
+		<parameters>
+			<parameter name="platform" value="MAC" />
+			<parameter name="browser" value="Firefox" />
+			<parameter name="version" value="23.0.1" />
+			<parameter name="url" value="http://ec2-54-226-32-46.compute-1.amazonaws.com:8080/pebble"/>
+		</parameters>
+		<classes>
+			<class name="MainScript" />
+		</classes>
+	</test>
+ </tests>
+</suite>

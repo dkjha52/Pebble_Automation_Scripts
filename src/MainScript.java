@@ -1,14 +1,18 @@
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.Properties;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeTest;
+import org.testng.annotations.Parameters;
 import org.testng.annotations.Test;
 
 public class MainScript 
@@ -18,8 +22,9 @@ public class MainScript
 	public static WebDriverWait wait;
 	public static Properties prop = new Properties();
 	
+	@Parameters({ "platform","browser","version", "url" })
 	@BeforeTest(alwaysRun=true)
-	public void setup()
+	public void setup(String platform, String browser, String version, String url) throws MalformedURLException
 	{
 		try {
              prop.load(new FileInputStream("pebble.properties"));
@@ -27,11 +32,30 @@ public class MainScript
         catch (IOException ex) {
               ex.printStackTrace();
          }
-		driver = new FirefoxDriver();
+		DesiredCapabilities caps = new DesiredCapabilities();
+		//Platforms
+		if(platform.equalsIgnoreCase("Windows"))
+			caps.setPlatform(org.openqa.selenium.Platform.WINDOWS);
+		if(platform.equalsIgnoreCase("MAC"))
+			caps.setPlatform(org.openqa.selenium.Platform.MAC);
+		if(platform.equalsIgnoreCase("Andorid"))
+			caps.setPlatform(org.openqa.selenium.Platform.ANDROID);
+		//Browsers
+		if(browser.equalsIgnoreCase("Internet Explorer"))
+			caps = DesiredCapabilities.internetExplorer();
+		if(browser.equalsIgnoreCase("Firefox"))
+			caps = DesiredCapabilities.firefox();
+		if(browser.equalsIgnoreCase("iPad"))
+			caps = DesiredCapabilities.ipad();
+		if(browser.equalsIgnoreCase("Android"))
+			caps = DesiredCapabilities.android();
+		//Version
+		caps.setVersion(version);
+		driver = new RemoteWebDriver(new URL("http://localhost:4444/wd/hub"), caps);
 		driver.manage().window().maximize();
 		CommonFunctions.turnOnImplicitWait(driver, 20);
 		wait = new WebDriverWait(driver, 10);
-		driver.get("http://localhost:8080/pebble");
+		driver.get(url);
 		element = wait.until(ExpectedConditions.elementToBeClickable(By.xpath(prop.getProperty("TXT_UNAME"))));
 		launchPage.verify_Login(driver, wait, prop);
 	}
