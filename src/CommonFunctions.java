@@ -57,9 +57,6 @@ public class CommonFunctions
 		case HTMLUNIT:
 			wd = new HtmlUnitDriver();
 			return wd;
-		case ANDROID:
-			wd = new AndroidDriver();
-			return wd;
 		case SAFARI:
 			wd = new SafariDriver();
 			wd.manage().window().maximize();
@@ -71,7 +68,7 @@ public class CommonFunctions
 
 	public static enum BrowserType
 	{
-		FIREFOX, IE, CHROME, HTMLUNIT, ANDROID, SAFARI
+		FIREFOX, IE, CHROME, HTMLUNIT, SAFARI
 	}
 	public static void turnOnImplicitWait (WebDriver wd,int timeout)
     {
